@@ -27,7 +27,7 @@ def cifar10_dataloader():
 # The models and images will be stored in `model` directory and `images` directory
 trainer = Trainer(SmallDCGANGenerator(out_channels=3, step_channels=16),
                   SmallDCGANDiscriminator(in_channels=3, step_channels=16),
-                  Adam, Adam, MinimaxGeneratorLoss, MinimaxDiscriminatorLoss,
+                  Adam, Adam, [MinimaxGeneratorLoss(), MinimaxDiscriminatorLoss()],
                   sample_size=64, epochs=50, verbose=5,
                   optimizer_generator_options={"lr": 0.0002, "betas": (0.5, 0.999)},
                   optimizer_discriminator_options={"lr": 0.0002, "betas": (0.5, 0.999)})

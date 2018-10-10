@@ -9,8 +9,8 @@ import torchvision.transforms as transforms
 # Torchgan imports
 from torchgan import *
 from torchgan.models import SmallDCGANGenerator, SmallDCGANDiscriminator
-from torchgan.losses import MinimaxGeneratorLoss, MinimaxDiscriminatorLoss,\
-                            LeastSquaresDiscriminatorLoss, LeastSquaresGeneratorLoss
+from torchgan.losses import WassersteinGeneratorLoss, WassersteinDiscriminatorLoss,\
+                            WassersteinGradientPenalty
 from torchgan.trainer import Trainer
 
 # Change the root to your desired path
@@ -28,23 +28,10 @@ def mnist_dataloader():
 # The models and images will be stored in `model` directory and `images` directory
 trainer = Trainer(SmallDCGANGenerator(out_channels=1, step_channels=16),
                   SmallDCGANDiscriminator(in_channels=1, step_channels=16),
-                  Adam, Adam, [MinimaxGeneratorLoss(), MinimaxDiscriminatorLoss()],
-                  sample_size=64, epochs=20, verbose=5,
+                  Adam, Adam, [WassersteinGeneratorLoss(), WassersteinDiscriminatorLoss(),
+                  WassersteinGradientPenalty()], sample_size=64, epochs=20, verbose=5,
                   optimizer_generator_options={"lr": 0.0002, "betas": (0.5, 0.999)},
                   optimizer_discriminator_options={"lr": 0.0002, "betas": (0.5, 0.999)})
 
 # Call the trainer with the data loader
 trainer(mnist_dataloader())
-
-# Now to change the Minimax Loss to Least Squared simply run the following
-trainer = Trainer(SmallDCGANGenerator(out_channels=1, step_channels=16),
-                  SmallDCGANDiscriminator(in_channels=1, step_channels=16),
-                  Adam, Adam, [LeastSquaresGeneratorLoss(), LeastSquaresDiscriminatorLoss()],
-                  sample_size=64, epochs=20, verbose=5,
-                  optimizer_generator_options={"lr": 0.0002, "betas": (0.5, 0.999)},
-                  optimizer_discriminator_options={"lr": 0.0002, "betas": (0.5, 0.999)})
-
-# Call the trainer with the data loader
-trainer(mnist_dataloader())
-
-# Launch tensorboard to see the generated images and the loss
