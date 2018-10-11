@@ -28,7 +28,8 @@ class BoundarySeekingGeneratorLoss(GeneratorLoss):
     def __init__(self, *args):
         super(BoundarySeekingGeneratorLoss, self).__init__(*args)
     def forward(self, dgz):
-        return 0.5 * torch.mean((log(dgz) - log(1 - dgz))**2)
+        dgz = torch.sigmoid(dgz)
+        return 0.5 * torch.mean((torch.log(dgz) - torch.log(1 - dgz))**2)
 
 # Create an instance of the Trainer class with the parameter needed
 # The models and images will be stored in `model` directory and `images` directory
