@@ -28,7 +28,7 @@ def mnist_dataloader():
 trainer = Trainer(SmallDCGANGenerator(out_channels=1, step_channels=16),
                   SmallDCGANDiscriminator(in_channels=1, step_channels=16),
                   Adam, Adam, [BoundaryEquilibriumLoss()],
-                  sample_size=64, epochs=20, verbose=5,
+                  sample_size=64, epochs=20,
                   optimizer_generator_options={"lr": 0.0002, "betas": (0.5, 0.999)},
                   optimizer_discriminator_options={"lr": 0.0002, "betas": (0.5, 0.999)})
 
