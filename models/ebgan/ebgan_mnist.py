@@ -8,7 +8,7 @@ import torchvision.transforms as transforms
 
 # Torchgan imports
 from torchgan import *
-from torchgan.models import SmallDCGANGenerator, SmallDCGANDiscriminator
+from torchgan.models import DCGANGenerator, DCGANDiscriminator
 from torchgan.losses import EnergyBasedGeneratorLoss, EnergyBasedDiscriminatorLoss
 from torchgan.trainer import Trainer
 
@@ -25,8 +25,8 @@ def mnist_dataloader():
 
 # Create an instance of the Trainer class with the parameter needed
 # The models and images will be stored in `model` directory and `images` directory
-trainer = Trainer(SmallDCGANGenerator(out_channels=1, step_channels=16),
-                  SmallDCGANDiscriminator(in_channels=1, step_channels=16),
+trainer = Trainer(DCGANGenerator(out_channels=1, step_channels=16),
+                  DCGANDiscriminator(in_channels=1, step_channels=16),
                   Adam, Adam, [EnergyBasedGeneratorLoss(), EnergyBasedDiscriminatorLoss()],
                   sample_size=64, epochs=20,
                   optimizer_generator_options={"lr": 0.0002, "betas": (0.5, 0.999)},
