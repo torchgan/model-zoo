@@ -36,8 +36,8 @@ def cifar10_dataloader():
 
 # Define the parameters of the network and the optimizer
 network_params = {
-        "generator": {"name": DCGANGenerator, "args": {"out_channels": 1, "step_channels": 16}},
-        "discriminator": {"name": DCGANDiscriminator, "args": {"in_channels": 1, "step_channels": 16}}
+        "generator": {"name": DCGANGenerator, "args": {"out_channels": 3 if args.dataset == "cifar10" else 1, "step_channels": 16}},
+        "discriminator": {"name": DCGANDiscriminator, "args": {"in_channels": 3 if args.dataset == "cifar10" else 1, "step_channels": 16}}
 }
 optim_params = {
         "optimizer_generator": {"name": Adam, "args": {"lr": 0.0002, "betas": (0.5, 0.999)}},
