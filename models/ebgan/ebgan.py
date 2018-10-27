@@ -9,8 +9,8 @@ import torchvision.transforms as transforms
 
 # Torchgan imports
 from torchgan import *
-from torchgan.models import DCGANGenerator, DCGANDiscriminator
-from torchgan.losses import BoundaryEquilibriumGeneratorLoss, BoundaryEquilibriumDiscriminatorLoss
+from torchgan.models import AutoEncodingGenerator, AutoEncodingDiscriminator
+from torchgan.losses import EnergyBasedGeneratorLoss, EnergyBasedDiscriminatorLoss 
 from torchgan.trainer import Trainer
 
 parser = argparse.ArgumentParser()
@@ -36,8 +36,8 @@ def cifar10_dataloader():
 
 # Define the parameters of the network and the optimizer
 network_params = {
-        "generator": {"name": DCGANGenerator, "args": {"out_channels": 3 if args.dataset == "cifar10" else 1, "step_channels": 16}},
-        "discriminator": {"name": DCGANDiscriminator, "args": {"in_channels": 3 if args.dataset == "cifar10" else 1, "step_channels": 16}}
+        "generator": {"name": AutoEncodingGenerator, "args": {"out_channels": 3 if args.dataset == "cifar10" else 1, "step_channels": 16}},
+        "discriminator": {"name": AutoEncodingDiscriminator, "args": {"in_channels": 3 if args.dataset == "cifar10" else 1, "step_channels": 16}}
 }
 optim_params = {
         "optimizer_generator": {"name": Adam, "args": {"lr": 0.0002, "betas": (0.5, 0.999)}},
