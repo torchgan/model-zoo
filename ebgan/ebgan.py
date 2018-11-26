@@ -10,7 +10,7 @@ import torchvision.transforms as transforms
 # Torchgan imports
 from torchgan import *
 from torchgan.models import AutoEncodingGenerator, AutoEncodingDiscriminator
-from torchgan.losses import EnergyBasedGeneratorLoss, EnergyBasedDiscriminatorLoss 
+from torchgan.losses import EnergyBasedGeneratorLoss, EnergyBasedDiscriminatorLoss
 from torchgan.trainer import Trainer
 
 parser = argparse.ArgumentParser()
@@ -34,7 +34,6 @@ def cifar10_dataloader():
     train_loader = data.DataLoader(train_dataset, batch_size=128, shuffle=True)
     return train_loader
 
-# Define the parameters of the network and the optimizer
 network_params = {
         "generator": {"name": AutoEncodingGenerator, "args": {"out_channels": 3 if args.dataset == "cifar10" else 1, "step_channels": 16}},
         "discriminator": {"name": AutoEncodingDiscriminator, "args": {"in_channels": 3 if args.dataset == "cifar10" else 1, "step_channels": 16}}

@@ -35,7 +35,6 @@ def cifar10_dataloader():
     train_loader = data.DataLoader(train_dataset, batch_size=128, shuffle=True)
     return train_loader
 
-# Define the parameters of the network and the optimizer
 network_params = {
         "generator": {"name": DCGANGenerator, "args": {"out_channels": 3 if args.dataset == "cifar10" else 1, "step_channels": 16}},
         "discriminator": {"name": DCGANDiscriminator, "args": {"in_channels": 3 if args.dataset == "cifar10" else 1, "step_channels": 16}}

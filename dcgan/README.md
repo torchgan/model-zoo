@@ -1,4 +1,4 @@
-# DCGAN
+# DCGAN (Deep Convolutional Generative Adversarial Network)
 
 __Link to Paper__ - _https://arxiv.org/abs/1511.06434_
 

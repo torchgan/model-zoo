@@ -34,7 +34,6 @@ def cifar10_dataloader():
     train_loader = data.DataLoader(train_dataset, batch_size=128, shuffle=True)
     return train_loader
 
-# This example illustrates how easily new loss functions can be added 
 class BoundarySeekingGeneratorLoss(GeneratorLoss):
     def __init__(self, *args):
         super(BoundarySeekingGeneratorLoss, self).__init__(*args)
@@ -42,7 +41,6 @@ class BoundarySeekingGeneratorLoss(GeneratorLoss):
         dgz = torch.sigmoid(dgz)
         return 0.5 * torch.mean((torch.log(dgz) - torch.log(1 - dgz))**2)
 
-# Define the parameters of the network and the optimizer
 network_params = {
         "generator": {"name": DCGANGenerator, "args": {"out_channels": 3 if args.dataset == "cifar10" else 1, "step_channels": 16}},
         "discriminator": {"name": DCGANDiscriminator, "args": {"in_channels": 3 if args.dataset == "cifar10" else 1, "step_channels": 16}}
