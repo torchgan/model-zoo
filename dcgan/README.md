@@ -1,34 +1,31 @@
 # DCGAN
 
+__Link to Paper__ - _https://arxiv.org/abs/1511.06434_
+
 ## Introduction
 
-Contains minimal examples on how to use `torchgan`. DCGAN is one of the models that is supported
-out of box by `torchgan`. In this case we use a custom version of DCGAN, which we prefer to call
-`SmallDCGAN`. It is simply adapted to handle smaller images.
+Demonstrates minimal examples based on DCGAN on how to use `torchgan'. DCGAN is
+one of the basic models that is supported out of box by `torchgan`. The 'torchgan'
+implementation of DCGAN improves upon the original paper by auto-adjusting itself for variable
+image sizes (as long as they are square images with dimensions being a perfect power of 2).
 
 ## Usage
 
-It is recommended that you use the `jupyter notebook` corresponding to these models. But in case you prefer
-to use this, you need to set a few of the parameters:
+```bash
+python dcgan.py -dataset "cifar10" -losses "LeastSquaredGeneratorLoss LeastSquaredDiscriminatorLoss"
+```
+Thats pretty much it. There are 2 configurable options.
 
-1. Set the `root` to where you want to store the dataset.
-2. If you donot have a gpu, pass a parameter `device = torch.device("cpu")` to the Trainer.
-3. You might want to comment out one of the two models, they simply demonstrate how we can seamlessly switch between losses.
+* `dataset` gives the option to choose between `MNIST` and `CIFAR10`.
+* `losses` allows the user to provide a list of loss functions
 
 ## Results
 
-### DCGAN_MNIST Least Squares Samples
-
-![DCGAN_MNIST Least Squares Samples](./images/dcgan_mnist_ls.gif)
-
-### DCGAN_MNIST Minimax Samples
-
-![DCGAN_MNIST Minimax Samples](./images/dcgan_mnist_minimax.gif)
-
-### DCGAN_CIFAR10 Minimax Samples
-
-![DCGAN_CIFAR10 Minimax Samples](./images/dcgan_cifar10_minimax.gif)
+| MNIST Least Squared Loss | MNIST Minimax Loss | CIFAR10 Minimax Loss |
+|:------------------------:|:------------------:|:--------------------:|
+|![DCGAN_MNIST Least Squares Samples](./assets/dcgan_mnist_ls.gif)|![DCGAN_MNIST Minimax Samples](./assets/dcgan_mnist_minimax.gif)|![DCGAN_CIFAR10 Minimax Samples](./assets/dcgan_cifar10_minimax.gif)|
 
 ## Contributors
 
 1. Avik Pal [@avik-pal]
+2. Aniket Das [@Aniket1998]
