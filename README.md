@@ -4,8 +4,8 @@ Collection of Generative Adversarial Networks developed using TorchGAN
 
 ## Models Present
 
-1. Generative MultiAdversarial Networks (GMAN)
-   [Link to Paper](https://arxiv.org/pdf/1611.01673.pdf)
+1. Generative MultiAdversarial Networks (GMAN)\
+   [Link to Paper](https://arxiv.org/pdf/1611.01673.pdf)\
    Requires the `torchgan` master.
 
 ## Contribution Guidelines
