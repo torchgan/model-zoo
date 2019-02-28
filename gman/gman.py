@@ -138,6 +138,11 @@ if __name__ == "__main__":
         type=float,
         default=0.0002)
     parser.add_argument(
+        "--cpu",
+        type=int,
+        help="Set it to 1 if cpu is to be used for training",
+        default=0)
+    parser.add_argument(
         "-m",
         "--multigpu",
         choices=[0, 1],
@@ -285,7 +290,7 @@ if __name__ == "__main__":
         MultiDiscriminatorMinimaxLoss()
     ]
 
-    if args.multigpu == 1:
+    if args.cpu == 0 and args.multigpu == 1:
         trainer = ParallelTrainer(
             network_configuration,
             losses,
@@ -297,9 +302,14 @@ if __name__ == "__main__":
             recon=args.reconstructions,
         )
     else:
+        if args.cpu == 1:
+            device = torch.device("cpu")
+        else:
+            device = torch.device("cuda:0")
         trainer = Trainer(
             network_configuration,
             losses,
+            device=device,
             epochs=args.epochs,
             sample_size=args.sample_size,
             checkpoints=args.checkpoint,
