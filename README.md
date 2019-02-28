@@ -1,35 +1,42 @@
-# TorchGAN model-zoo
+# TorchGAN: Model Zoo
 
-Examples of Generative Adversarial Networks built using torchgan.
+Collection of Generative Adversarial Networks developed using TorchGAN
 
-This repository is meant to be used to understand the functionality of
-torchgan. Currently we donot provide any form of trained models here but
-it might be added later on.
+## Models Present
 
-## Contributions
+1. Generative MultiAdversarial Networks (GMAN)
+   [Link to Paper](https://arxiv.org/pdf/1611.01673.pdf)
+   Requires the `torchgan` master.
 
-Contributions are welcome. Before starting to work on a model open an
-issue for the same. This is just to make sure that you avoid redundant
-work. Also be sure to follow the following guidelines :-
+## Contribution Guidelines
 
-1. A Jupyter Notebook is needed for every model that is being added. The
-   jupyter notebook must have a minimal working example using a simple
-   dataset like `MNIST` or `CIFAR10`, however feel free to use more
-   complicated ones. Add this to the `notebooks` directory. If the
-   notebook demonstrates `DCGAN` on `MNIST` name place it in
-   `dcgan/DCGAN_MNIST.ipynb`.
-2. A python file for the model must be places in the `models` directory.
-   Follow the same structure as the notebook.
-3. Place a `README.md` file in both these directories. It must contain
-   the `link` to the paper and a section `Contributors` where list out
-   all the names of the people who have contributed in the form of
-   `<FULL NAME>[<github handle>]`.
+We are open to accepting any model that you have built. The only things
+to keep in mind are the following:
 
-## Issues
+1. Keep the models simple and reuse features of torchgan if possible.
+2. Have enough command line options for users to play with.
+3. Once you are done run `isort` and `yapf` for formatting the code
+   properly.
 
-If you want a new model to be added to the model-zoo open an issue with
-the `tag`, `[NEW MODEL]`.<br>
-If you are working on a model, open an issue with the tag `[WIP]`.<br>
-For any usage related issues feel free to reach out on Slack. Also any
-bugs related to the core library needs to be filed in `torchgan`
-repository.
+## FAQ
+
+### How to run the Model?
+
+To run these models you need to have `torchgan` installed.
+
+Then simply move into the directory.
+
+```bash
+$ python3 <model name.py> --help
+```
+
+This will show you the configurable options that are available.
+
+### Why do the models mostly use MNIST or CIFAR10?
+
+The aim of this repository is to demonstrate the usage of torchgan. We believe
+this is best done if users can simply download the script and run it without
+having to download hundreds of GBs of dataset. However, we shall definitely
+add more models in the future which are specifically designed for high resolution
+data.
+
