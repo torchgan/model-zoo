@@ -15,8 +15,8 @@ to keep in mind are the following:
 
 1. Keep the models simple and reuse features of torchgan if possible.
 2. Have enough command line options for users to play with.
-3. Once you are done run `isort` and `yapf` for formatting the code
-   properly.
+3. Once you are done run `isort` and `yapf` (in this order only) for
+   formatting the code properly.
 
 ## FAQ
 
