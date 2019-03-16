@@ -1,30 +1,17 @@
-# Pytorch and Torchvision Imports
+import argparse
+
 import torch
-import torchvision
-from torch.optim import Adam
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.utils.data as data
 import torchvision.datasets as dsets
 import torchvision.transforms as transforms
+from torch.optim import Adam
+from torchgan.losses import (WassersteinDiscriminatorLoss,
+                             WassersteinGeneratorLoss,
+                             WassersteinGradientPenalty)
+from torchgan.models import DCGANDiscriminator, DCGANGenerator
+from torchgan.trainer import ParallelTrainer, Trainer
 
-# TorchGAN
-import torchgan
-from torchgan.models import DCGANGenerator, DCGANDiscriminator
-from torchgan.trainer import Trainer
-from torchgan.losses import WassersteinGeneratorLoss, WassersteinDiscriminatorLoss,\
-                            WassersteinGradientPenalty
-
-# Transforms to get Binarized MNIST
-dataset = dsets.MNIST(root='./mnist', train=True,
-                      transform=transforms.Compose([transforms.Resize((32, 32)),
-                                                    transforms.Lambda(lambda x: x.convert('1')),
-                                                    transforms.ToTensor()]),
-                      download=True)
-
-dataloader = data.DataLoader(dataset, batch_size=32, shuffle=True, num_workers=8)
-
-device = torch.device("cuda:0")
 
 # Binary Neurons
 class Binarize(torch.autograd.Function):
@@ -48,6 +35,7 @@ class Binarize(torch.autograd.Function):
         x, = self.saved_tensors
         return grad_output * x * (1.0 - x), None, None, None
 
+
 class BinaryNeurons(nn.Module):
     r"""Implements the Binary Neurons as described in https://arxiv.org/pdf/1810.04714.pdf
 
@@ -57,6 +45,7 @@ class BinaryNeurons(nn.Module):
             output.
         threshold (float, optional): The probability threshold.
     """
+
     def __init__(self, mode='d', threshold=0.5):
         super(BinaryNeurons, self).__init__()
         self.function = Binarize.apply
@@ -72,44 +61,169 @@ class BinaryNeurons(nn.Module):
         return self.function(x, self.mode, self.threshold, self.dist)
 
 
-network_config = {
-    "generator": {
-        "name": DCGANGenerator,
-        "args": {
-            "encoding_dims": 100,
-            "out_channels": 1,
-            "step_channels": 32,
-            "last_nonlinearity": BinaryNeurons()
-        },
-        "optimizer": {
-            "name": Adam,
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-f",
+        "--data_dir",
+        help="directory where mnist will be downloaded/is available",
+        default="./")
+    parser.add_argument(
+        "-sc",
+        "--step_channels",
+        help="step channels for the generator and discriminators",
+        type=int,
+        default=16)
+    parser.add_argument(
+        "-t",
+        "--threshold",
+        help="The threshold for binarization",
+        type=float,
+        default=0.5)
+    parser.add_argument(
+        "--type",
+        help="Type of Binarization to be used",
+        choices=['s', 'd'],
+        default='s')
+    parser.add_argument(
+        "-lr",
+        "--learning_rate",
+        help="The learning rate for the optimizers",
+        type=float,
+        default=0.0002)
+    parser.add_argument(
+        "--cpu",
+        type=int,
+        help="Set it to 1 if cpu is to be used for training",
+        default=0)
+    parser.add_argument(
+        "-m",
+        "--multigpu",
+        choices=[0, 1],
+        type=int,
+        help="Choose 1 if multiple GPUs are available for training",
+        default=0)
+    parser.add_argument(
+        "-l",
+        "--list_gpus",
+        type=int,
+        nargs='+',
+        help="List of GPUs to be used for training. Used iff -m is set to 1",
+        default=[0, 1])
+    parser.add_argument(
+        "-b",
+        "--batch_size",
+        type=int,
+        help="Batch Size for training",
+        default=32)
+    parser.add_argument(
+        "-s",
+        "--sample_size",
+        type=int,
+        help="Number of Images Generated per Epoch",
+        default=64)
+    parser.add_argument(
+        "-c",
+        "--checkpoint",
+        help="Place to store the trained model",
+        default="./gman_")
+    parser.add_argument(
+        "-r",
+        "--reconstructions",
+        help="Directory to store the generated images",
+        default="./gman_images")
+    parser.add_argument(
+        "-e",
+        "--epochs",
+        help="Total epochs for which the model will be trained",
+        default=20,
+        type=int)
+    args = parser.parse_args()
+
+    network_config = {
+        "generator": {
+            "name": DCGANGenerator,
             "args": {
-                "lr": 0.0001,
-                "betas": (0.5, 0.999)
+                "encoding_dims":
+                100,
+                "out_channels":
+                1,
+                "step_channels":
+                args.step_channels,
+                "last_nonlinearity":
+                BinaryNeurons(mode=args.type, threshold=args.threshold)
+            },
+            "optimizer": {
+                "name": Adam,
+                "args": {
+                    "lr": args.learning_rate,
+                    "betas": (0.5, 0.999)
+                }
             }
-        }
-    },
-    "discriminator": {
-        "name": DCGANDiscriminator,
-        "args": {
-            "in_channels": 1,
-            "step_channels": 32
         },
-        "optimizer": {
-            "name": Adam,
+        "discriminator": {
+            "name": DCGANDiscriminator,
             "args": {
-                "lr": 0.0001,
-                "betas": (0.5, 0.999)
+                "in_channels": 1,
+                "step_channels": args.step_channels
+            },
+            "optimizer": {
+                "name": Adam,
+                "args": {
+                    "lr": args.learning_rate,
+                    "betas": (0.5, 0.999)
+                }
             }
         }
     }
-}
 
-losses_list = [WassersteinGeneratorLoss(), WassersteinDiscriminatorLoss(), WassersteinGradientPenalty()]
+    losses_list = [
+        WassersteinGeneratorLoss(),
+        WassersteinDiscriminatorLoss(),
+        WassersteinGradientPenalty()
+    ]
 
-trainer = Trainer(network_config, losses_list, sample_size=64, epochs=1000,
-                  recon="./images_binary", retain_checkpoints=1, device=device)
+    if args.cpu == 0 and args.multigpu == 1:
+        trainer = ParallelTrainer(
+            network_config,
+            losses_list,
+            args.list_gpus,
+            epochs=args.epochs,
+            sample_size=args.sample_size,
+            checkpoints=args.checkpoint,
+            retain_checkpoints=1,
+            recon=args.reconstructions,
+        )
+    else:
+        if args.cpu == 1:
+            device = torch.device("cpu")
+        else:
+            device = torch.device("cuda:0")
+        trainer = Trainer(
+            network_config,
+            losses_list,
+            device=device,
+            epochs=args.epochs,
+            sample_size=args.sample_size,
+            checkpoints=args.checkpoint,
+            retain_checkpoints=1,
+            recon=args.reconstructions,
+        )
 
-trainer(dataloader)
+    # Transforms to get Binarized MNIST
+    dataset = dsets.MNIST(
+        root=args.data_dir,
+        train=True,
+        transform=transforms.Compose([
+            transforms.Resize((32, 32)),
+            transforms.Lambda(lambda x: x.convert('1')),
+            transforms.ToTensor()
+        ]),
+        download=True)
 
-trainer.complete()
+    dataloader = data.DataLoader(
+        dataset, batch_size=args.batch_size, shuffle=True)
+
+    trainer(dataloader)
+
+    trainer.complete()
