@@ -41,6 +41,8 @@ jobs:
       script:
         # Test GMAN
         - python gman/gman.py --cpu 1 -b 32 -s 16 -e 1
+        # Test BinaryGAN
+        - python binarygan/binarygan.py --cpu 1 -b 32 -s 16 -e 1
 
       after_success: # nothing to do
 
