@@ -154,7 +154,7 @@ if __name__ == "__main__":
         "--list_gpus",
         type=int,
         nargs='+',
-        help="List of GPUs to be used for training. Used iff -m is set to 1",
+        help="List of GPUs to be used for training. Used if -m is set to 1",
         default=[0, 1])
     parser.add_argument(
         "-b",
@@ -190,13 +190,14 @@ if __name__ == "__main__":
     if args.dataset == "cifar10":
         channels = 3
         dataset = dsets.CIFAR10
+        norm = transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
     else:
         channels = 1
         dataset = dsets.MNIST
         transformations.append(transforms.Resize((32, 32)))
+        norm = transforms.Normalize(mean=(0.5, ), std=(0.5, ))
     transformations.append(transforms.ToTensor())
-    transformations.append(
-        transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5)))
+    transformations.append(norm)
 
     network_configuration = {
         "generator": {
