@@ -31,18 +31,20 @@ class Binarize(torch.autograd.Function):
 
     @staticmethod
     def backward(self, grad_output):
-        # While backpropagating we only consider the output of the sigmoid function
+        # While backpropagating we only consider the output of the sigmoid
+        # function
         x, = self.saved_tensors
         return grad_output * x * (1.0 - x), None, None, None
 
 
 class BinaryNeurons(nn.Module):
-    r"""Implements the Binary Neurons as described in https://arxiv.org/pdf/1810.04714.pdf
+    r"""Implements the Binary Neurons as described in
+    https://arxiv.org/pdf/1810.04714.pdf
 
     Args:
-        mode (str, optional): 2 choices - 'd' for Deterministic Binary Neurons and 's' for
-            Stochastic Binary Neurons. Any other choice will result in the preactivation
-            output.
+        mode (str, optional): 2 choices - 'd' for Deterministic Binary Neurons
+            and 's' for Stochastic Binary Neurons. Any other choice will result
+            in the preactivation output.
         threshold (float, optional): The probability threshold.
     """
 
