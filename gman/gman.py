@@ -198,6 +198,7 @@ if __name__ == "__main__":
         norm = transforms.Normalize(mean=(0.5, ), std=(0.5, ))
     transformations.append(transforms.ToTensor())
     transformations.append(norm)
+    transformations = transforms.Compose(transformations)
 
     network_configuration = {
         "generator": {
