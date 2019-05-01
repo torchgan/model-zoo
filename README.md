@@ -8,6 +8,10 @@ Collection of Generative Adversarial Networks developed using TorchGAN
    [Link to Paper](https://arxiv.org/pdf/1611.01673.pdf)\
    Requires the `torchgan` master.
 
+2. Training GANs with Binary Neurons by End-to-end Backpropagation\
+   [Link to Paper](https://arxiv.org/pdf/1810.04714.pdf)\
+   Requires the `torchgan` master.
+
 ## Contribution Guidelines
 
 We are open to accepting any model that you have built. The only things
