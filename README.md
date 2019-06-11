@@ -12,6 +12,10 @@ Collection of Generative Adversarial Networks developed using TorchGAN
    [Link to Paper](https://arxiv.org/pdf/1810.04714.pdf)\
    Requires the `torchgan` master.
 
+3. Metropolis-Hastings GAN (MHGAN)\
+   [Link to Paper](https://arxiv.org/pdf/1811.11357.pdf)\
+   Requires the `torchgan` master.
+
 ## Contribution Guidelines
 
 We are open to accepting any model that you have built. The only things
