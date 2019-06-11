@@ -1,21 +1,18 @@
-import os
-import random
-
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.utils.data as data
-import torchgan
-import torchvision
 import torchvision.datasets as dsets
 import torchvision.transforms as transforms
 import torchvision.utils as vutils
 from IPython.display import HTML
-from torch.optim import SGD, Adam
-from torchgan.losses import *
-from torchgan.models import *
+from torch.optim import Adam
+from torchgan.losses import (AuxiliaryClassifierDiscriminatorLoss,
+                             AuxiliaryClassifierGeneratorLoss,
+                             MinimaxDiscriminatorLoss, MinimaxGeneratorLoss)
+from torchgan.models import ACGANDiscriminator, ACGANGenerator
 from torchgan.trainer import Trainer
 
 dataset = dsets.MNIST(root='./mnist',
